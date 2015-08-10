@@ -12,7 +12,7 @@
 })();
 
 function buildURL() {
-  baseURL = "http://dhood.github.io/pullrequest-visualiser/plot.html"
+  baseURL = "http://dhood.github.io/pullrequest-visualiser/plot.html";
 
   url = null;
   currentLink = window.location.href;

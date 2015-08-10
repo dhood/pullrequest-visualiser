@@ -1,18 +1,18 @@
 <a href="javascript:(function(){
   var url = buildURL();
   if (url != null) {
-    var win = window.open(url, '_blank');
-    if ( win != null ) {
-    	win.focus();		
-	}
+      var win = window.open(url, '_blank');
+      if ( win != null ) {
+        win.focus();    
+    }
+    }
+    else {
+    alert('Don\'t think you\'e on a github repository, sorry');
   }
-  else {
-  console.log('Don\'t think this is a repository');
-}
 })();
 
 function buildURL() {
-  baseURL = 'http://dhood.github.io/pullrequest-visualiser/plot.html';
+  baseURL = "http://dhood.github.io/pullrequest-visualiser/plot.html";
 
   url = null;
   currentLink = window.location.href;
@@ -20,7 +20,7 @@ function buildURL() {
   if ( afterGithub != null && afterGithub.length > 1 ) {
     afterGithub = afterGithub[1];
     pieces = afterGithub.split('/');
-    if ( pieces.length > 2 ) {
+    if ( pieces.length >= 2 ) {
       repoOwner = pieces[0];
       repoName = pieces[1];
       url = baseURL + '?' + repoOwner + '/' + repoName;
