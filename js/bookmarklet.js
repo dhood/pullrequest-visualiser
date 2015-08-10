@@ -6,12 +6,12 @@
   }
 })();
 
-baseURL = "http://dhood.github.io/pullrequest-visualiser/plot.html"
-
 function buildURL() {
+  baseURL = "http://dhood.github.io/pullrequest-visualiser/plot.html"
+
   url = null;
   currentLink = window.location.href;
-  afterGithub = match(/github.com\/(.*)/);
+  afterGithub = currentLink.match(/github.com\/(.*)/);
   if ( afterGithub != null && afterGithub.length > 1 ) {
     afterGithub = afterGithub[1];
     pieces = afterGithub.split('/');
