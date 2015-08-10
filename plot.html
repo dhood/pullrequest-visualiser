@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>  
+  <script type="text/javascript" src="js/getPRs.js"></script>
+  <script type="text/javascript">
+
+  /*
+  openPRdata_dummy = [
+    { x: new Date(Date.parse("2011-03-22T13:33:48Z")), y: 0},
+    { x: new Date(Date.parse("2011-04-22T13:33:48Z")), y: 8},
+    { x: new Date(Date.parse("2011-04-23T13:33:48Z")), y: 10 },
+    { x: new Date(Date.parse("2011-04-23T13:59:48Z")), y: 15 },
+    { x: new Date(Date.parse("2011-05-23T13:59:48Z")), y: 12 },
+    { x: new Date(Date.parse("2011-06-23T13:59:58Z")), y: 8 }
+    ]
+
+  mergedPRdata_dummy = [
+    { x: new Date(Date.parse("2011-03-22T13:33:48Z")), y: 100},
+    { x: new Date(Date.parse("2011-04-22T13:33:48Z")), y: 56},
+    { x: new Date(Date.parse("2011-04-23T13:33:48Z")), y: 110 },
+    { x: new Date(Date.parse("2011-04-23T13:59:48Z")), y: 105 },
+    { x: new Date(Date.parse("2011-05-23T13:59:48Z")), y: 120 },
+    { x: new Date(Date.parse("2011-06-23T13:59:48Z")), y: 80 }
+    ]
+    */
+
+    function plotData() {
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+      zoomEnabled: false,
+                        animationEnabled: true,
+      title:{
+        text: "Pull Requests"
+      },
+      axisY:{
+        labelFontColor: '#369EAD'
+      },
+      axisY2:{
+        labelFontColor: '#B04849',
+        interlacedColor: "#F5F5F5",
+        gridColor: "#D7D7D7",      
+        tickColor: "#D7D7D7"                
+      },
+                        theme: "theme1",
+                        toolTip:{
+                                shared: true
+                        },
+      legend:{
+        verticalAlign: "bottom",
+        horizontalAlign: "center",
+        fontSize: 15,
+        fontFamily: "Lucida Sans Unicode"
+
+      },
+      data: [
+      {        
+        type: "scatter",
+        color: "#369EAD",
+        lineThickness: 3,
+        showInLegend: true,           
+        name: "Open PRs", 
+        xValueFormatString: "DD MMM 'YY hh:mm" ,
+        dataPoints: openPRdata
+      },
+      /*{        
+        type: "scatter",
+        lineThickness:3,
+        showInLegend: true,           
+        name: "Merged PRs",
+        axisYType:"secondary",
+        xValueFormatString: "DD MMM 'YY hh:mm" ,
+        dataPoints: closedPRdata
+      }*/
+
+      ],
+          legend: {
+            cursor:"pointer",
+            itemclick : function(e) {
+              if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+              e.dataSeries.visible = false;
+              }
+              else {
+                e.dataSeries.visible = true;
+              }
+              chart.render();
+            }
+          }
+        });
+chart.render();
+}
+
+</script>
+  <script type="text/javascript" src="js/canvasjs.min.js"></script>
+</head>
+<body>
+  <div id="chartContainer" style="height: 300px; width: 100%;">
+  </div>
+</body>
+</html>
