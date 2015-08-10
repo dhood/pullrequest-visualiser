@@ -2,8 +2,13 @@
   var url = buildURL();
   if (url != null) {
     var win = window.open(url, '_blank');
-    win.focus(); 
+    if ( win != null ) {
+    	win.focus();		
+	}
   }
+  else {
+  console.log('Don\'t think this is a repository');
+}
 })();
 
 function buildURL() {
