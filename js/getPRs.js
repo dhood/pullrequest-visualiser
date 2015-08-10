@@ -11,8 +11,9 @@ var request = new XMLHttpRequest();
 request.onload = processResponse
 
 // Initialize a request
-repoOwner = 'KSP-CKAN'
-repoName = 'CKAN'
+queryParams = window.location.search.slice(1).split('/')
+repoOwner = queryParams[0]
+repoName = queryParams[1]
 state = 'all'
 page = 1
 since = getSince()
