@@ -1,1 +1,25 @@
-<a href="javascript:(function() {var prv = window.prv = window.prv || {}; if (!prv.bookmarklet) {prv.bookmarklet = document.createElement('script'); prv.bookmarklet.src = '//dhood.github.io/pullrequest-visualiser/js/bookmarklet.js'; document.body.appendChild(prv.bookmarklet); } })();">Graph PRs</a>
+<a href="javascript:(function(){
+  var url = buildURL();
+  if (url != null) {
+    var win = window.open(url, '_blank');
+    win.focus(); 
+  }
+})();
+
+function buildURL() {
+  baseURL = 'http://dhood.github.io/pullrequest-visualiser/plot.html';
+
+  url = null;
+  currentLink = window.location.href;
+  afterGithub = currentLink.match(/github.com\/(.*)/);
+  if ( afterGithub != null && afterGithub.length > 1 ) {
+    afterGithub = afterGithub[1];
+    pieces = afterGithub.split('/');
+    if ( pieces.length > 2 ) {
+      repoOwner = pieces[0];
+      repoName = pieces[1];
+      url = baseURL + '?' + repoOwner + '/' + repoName;
+    }
+  }
+  return url;
+}">Graph PRs</a>
