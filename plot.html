@@ -5,25 +5,13 @@
   <script type="text/javascript" src="js/getPRs.js"></script>
   <script type="text/javascript">
 
-  /*
-  openPRdata_dummy = [
-    { x: new Date(Date.parse("2011-03-22T13:33:48Z")), y: 0},
-    { x: new Date(Date.parse("2011-04-22T13:33:48Z")), y: 8},
-    { x: new Date(Date.parse("2011-04-23T13:33:48Z")), y: 10 },
-    { x: new Date(Date.parse("2011-04-23T13:59:48Z")), y: 15 },
-    { x: new Date(Date.parse("2011-05-23T13:59:48Z")), y: 12 },
-    { x: new Date(Date.parse("2011-06-23T13:59:58Z")), y: 8 }
-    ]
-
-  mergedPRdata_dummy = [
-    { x: new Date(Date.parse("2011-03-22T13:33:48Z")), y: 100},
-    { x: new Date(Date.parse("2011-04-22T13:33:48Z")), y: 56},
-    { x: new Date(Date.parse("2011-04-23T13:33:48Z")), y: 110 },
-    { x: new Date(Date.parse("2011-04-23T13:59:48Z")), y: 105 },
-    { x: new Date(Date.parse("2011-05-23T13:59:48Z")), y: 120 },
-    { x: new Date(Date.parse("2011-06-23T13:59:48Z")), y: 80 }
-    ]
-    */
+    markerColor_opened = 'grey'
+    markerType_opened = 'circle'
+    markerColor_closedmerged = '#2EB783'
+    markerType_closedmerged = 'triangle'
+    markerColor_closedunmerged = 'red'
+    markerType_closedunmerged = 'cross'
+    lineColor = 'lightgrey'
 
     function plotData() {
     var chart = new CanvasJS.Chart("chartContainer",
@@ -31,50 +19,60 @@
       zoomEnabled: true,
       animationEnabled: true,
       title:{
-        text: "Pull Requests"
+        text: "Pull Requests for " + repoOwner + "'s '" + repoName + "'"
       },
       axisX:{
         valueFormatString: "DD MMM 'YY HH:mm"
       },
       axisY:{
-        interlacedColor: "#F5F5F5"
+        interlacedColor: "#F5F5F5",
+        includeZero: true
       },
-                        theme: "theme1",
-                        toolTip:{
-                                shared: true
-                        },
+      theme: "theme1",
+      toolTip:{
+              shared: true
+      },
       legend:{
         verticalAlign: "bottom",
         horizontalAlign: "center",
-        fontSize: 15,
         fontFamily: "Lucida Sans Unicode"
 
       },
       data: [
         {        
           type: "line",
-          color: "#369EAD",
+          color: lineColor,
+          markerColor: markerColor_opened,
+          markerType: markerType_opened,
           lineThickness: 3,
           showInLegend: true,           
           name: "Open PRs", 
+          legendText: "PR opened",
           xValueFormatString: "DD MMM 'YY HH:mm",
-          dataPoints: openPRdata
+          dataPoints: openPRdata,
+          toolTipContent: "{x}<br/>{name}: {y}"
+        },
+        // just for the legend of different types of markers:
+        {
+          type: "line",
+          color: lineColor,
+          markerColor: markerColor_closedmerged,
+          markerType: markerType_closedmerged,
+          showInLegend: true,
+          name: "PR merged",
+          dataPoints: []
+        },
+        {
+          type: "line",
+          color: lineColor,
+          markerColor: markerColor_closedunmerged,
+          markerType: markerType_closedunmerged,
+          showInLegend: true,
+          name: "PR closed unmerged",
+          dataPoints: []
         }
-
-      ],
-          legend: {
-            cursor:"pointer",
-            itemclick : function(e) {
-              if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-              e.dataSeries.visible = false;
-              }
-              else {
-                e.dataSeries.visible = true;
-              }
-              chart.render();
-            }
-          }
-        });
+      ]
+      });
 chart.render();
 }
 

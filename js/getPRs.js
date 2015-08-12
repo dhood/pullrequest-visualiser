@@ -1,4 +1,4 @@
-useTestData = true
+useTestData = false
 count_openPRs = count_closedPRs = 0
 openPRdata = []
 closedPRdata = mergedPRdata = []
@@ -69,9 +69,10 @@ function processResponse() {
 
 function processPRs(data) {
 	for (var i = 0; i < data.length; i++) {
-		openPRdata.push({ x: new Date(Date.parse(data[i].created_at)), y: ++count_openPRs})
+		openPRdata.push({ x: new Date(Date.parse(data[i].created_at)), y: ++count_openPRs })
 		if (data[i].closed_at != null) {
-			closedDatesToProcess.push(new Date(Date.parse(data[i].closed_at)))
+			boolMerged = data[i].merged_at != null
+			closedDatesToProcess.push({ date: new Date(Date.parse(data[i].closed_at)), merged: boolMerged })
 		}
 	}
 }
@@ -83,7 +84,7 @@ function processClosedDates() {
 	// decrement cumulative open PRs if some have been closed
 	var i, j = 0;
 	for (i = 0; i < closedDatesToProcess.length; i++) {
-		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i]) {
+		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i].date) {
 			openPRdata[j++].y -= i
 		}
 	}
@@ -96,10 +97,19 @@ function processClosedDates() {
 	// second pass to insert the closed-date data points
 	var j = 0;
 	for (var i = 0; i < closedDatesToProcess.length; i++) {
-		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i]) {
+		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i].date) {
 			j++;
 		}
-		openPRdata.splice(j, 0, { x: closedDatesToProcess[i], y: openPRdata[j-1].y-1, markerType: 'cross'})		
+		if ( closedDatesToProcess[i].merged ) {
+			markerType = markerType_closedmerged
+			markerColor = markerColor_closedmerged
+		}
+		else {
+			markerType = markerType_closedunmerged
+			markerColor = markerColor_closedunmerged
+		}
+		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: openPRdata[j-1].y-1, 
+					markerType: markerType, markerColor: markerColor })		
 	}
 }
 
@@ -109,16 +119,9 @@ function getSince() {
     return d.toISOString().slice(0, -5)+'Z';
 }
 
-var date_sort_asc = function (date1, date2) {
-  if (date1 > date2) return 1;
-  if (date1 < date2) return -1;
+var date_sort_asc = function (obj1, obj2) {
+  if (obj1.date > obj2.date) return 1;
+  if (obj1.date < obj2.date) return -1;
   return 0;
 };
-
-function uniq(a) {
-    var seen = {};
-    return a.filter(function(item) {
-        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
-    });
-}
 
