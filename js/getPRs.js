@@ -81,22 +81,25 @@ function processClosedDates() {
 	closedDatesToProcess.sort(date_sort_asc)
 
 	// decrement cumulative open PRs if some have been closed
-	var j = 0;
-	for (var i = 0; i < closedDatesToProcess.length; i++) {
-		console.log('closed date: '+closedDatesToProcess[i])
-		while (j < openPRdata.length && openPRdata[j].x < closedDatesToProcess[i]) {
-			console.log('removing ' + i + ' from ' + openPRdata[j].x)
+	var i, j = 0;
+	for (i = 0; i < closedDatesToProcess.length; i++) {
+		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i]) {
 			openPRdata[j++].y -= i
 		}
-		
 	}
-	// second pass to insert the closed-date data points (this is buggy for now - will come back to it)
+	// continue for data points after the last close event
+	while ( j < openPRdata.length ) {
+		openPRdata[j++].y -= i
+	}
+
+
+	// second pass to insert the closed-date data points
+	var j = 0;
 	for (var i = 0; i < closedDatesToProcess.length; i++) {
-		var j = 0;
-		while (j < openPRdata.length && openPRdata[j].x < closedDatesToProcess[i]) {
+		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i]) {
 			j++;
 		}
-		openPRdata.push({ x: closedDatesToProcess[i], y: openPRdata[j-1].y-1, markerType: 'cross'})		
+		openPRdata.splice(j, 0, { x: closedDatesToProcess[i], y: openPRdata[j-1].y-1, markerType: 'cross'})		
 	}
 }
 
@@ -111,4 +114,11 @@ var date_sort_asc = function (date1, date2) {
   if (date1 < date2) return -1;
   return 0;
 };
+
+function uniq(a) {
+    var seen = {};
+    return a.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+}
 

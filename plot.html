@@ -28,19 +28,16 @@
     function plotData() {
     var chart = new CanvasJS.Chart("chartContainer",
     {
-      zoomEnabled: false,
-                        animationEnabled: true,
+      zoomEnabled: true,
+      animationEnabled: true,
       title:{
         text: "Pull Requests"
       },
-      axisY:{
-        labelFontColor: '#369EAD'
+      axisX:{
+        valueFormatString: "DD MMM 'YY HH:mm"
       },
-      axisY2:{
-        labelFontColor: '#B04849',
-        interlacedColor: "#F5F5F5",
-        gridColor: "#D7D7D7",      
-        tickColor: "#D7D7D7"                
+      axisY:{
+        interlacedColor: "#F5F5F5"
       },
                         theme: "theme1",
                         toolTip:{
@@ -54,24 +51,15 @@
 
       },
       data: [
-      {        
-        type: "scatter",
-        color: "#369EAD",
-        lineThickness: 3,
-        showInLegend: true,           
-        name: "Open PRs", 
-        xValueFormatString: "DD MMM 'YY hh:mm" ,
-        dataPoints: openPRdata
-      },
-      /*{        
-        type: "scatter",
-        lineThickness:3,
-        showInLegend: true,           
-        name: "Merged PRs",
-        axisYType:"secondary",
-        xValueFormatString: "DD MMM 'YY hh:mm" ,
-        dataPoints: closedPRdata
-      }*/
+        {        
+          type: "line",
+          color: "#369EAD",
+          lineThickness: 3,
+          showInLegend: true,           
+          name: "Open PRs", 
+          xValueFormatString: "DD MMM 'YY HH:mm",
+          dataPoints: openPRdata
+        }
 
       ],
           legend: {
