@@ -1,3 +1,4 @@
+useTestData = true
 count_openPRs = count_closedPRs = 0
 openPRdata = []
 closedPRdata = mergedPRdata = []
@@ -26,30 +27,42 @@ request.send()
 
 
 function buildRequestString(repoOwner, repoName, state, page, since) {
-	return 'https://api.github.com/repos/' + repoOwner + '/' + repoName
-		 + '/pulls?state=' + state + '&page=' + page + '&since=' + since 
-		 + '&direction=asc&per_page=100'
+	if ( useTestData ) {
+		return 'testdata2.txt'
+	}
+	else {
+		return 'https://api.github.com/repos/' + repoOwner + '/' + repoName
+			 + '/pulls?state=' + state + '&page=' + page + '&since=' + since 
+			 + '&direction=asc&per_page=100'	
+	}
+		 
 }
 
 function processResponse() {
 	// process info
 	var responseObj = JSON.parse(this.responseText)
 
-	if (responseObj.length > 0) {	
-		processPRs(responseObj)	
+	if ( !useTestData ) {
 
-		
-		page++
-		apiRequestString = buildRequestString(repoOwner, repoName, state, page, since)
-		request.open('get', apiRequestString)
-		// Send it
-		request.send()
+		if (responseObj.length > 0) {	
+			processPRs(responseObj)	
+			// request the next page
+			page++
+			apiRequestString = buildRequestString(repoOwner, repoName, state, page, since)
+			request.open('get', apiRequestString)
+			// Send it
+			request.send()	
+		}
+		else {
+			processClosedDates()
+			console.log(count_openPRs + " pull requests!")
+			plotData()
+		}
+
 	}
 	else {
-		
+		processPRs(responseObj)
 		processClosedDates()
-		//processClosedDates()
-		console.log(count_openPRs + " pull requests!")
 		plotData()
 	}
 }
@@ -63,16 +76,19 @@ function processPRs(data) {
 	}
 }
 
-function processClosedDates() {
-	closedDatesToProcess.sort().reverse()
 
-	// decrement cumulative open PRs if some have been closed (this is inefficient for now - will come back to it)
+function processClosedDates() {
+	closedDatesToProcess.sort(date_sort_asc)
+
+	// decrement cumulative open PRs if some have been closed
+	var j = 0;
 	for (var i = 0; i < closedDatesToProcess.length; i++) {
-		for (var j = 0; j < openPRdata.length; j++){
-			if (openPRdata[j].x > closedDatesToProcess[i]){
-				openPRdata[j].y -= 1
-			}
+		console.log('closed date: '+closedDatesToProcess[i])
+		while (j < openPRdata.length && openPRdata[j].x < closedDatesToProcess[i]) {
+			console.log('removing ' + i + ' from ' + openPRdata[j].x)
+			openPRdata[j++].y -= i
 		}
+		
 	}
 	// second pass to insert the closed-date data points (this is buggy for now - will come back to it)
 	for (var i = 0; i < closedDatesToProcess.length; i++) {
@@ -89,4 +105,10 @@ function getSince() {
     d.setMonth(d.getMonth()-1)
     return d.toISOString().slice(0, -5)+'Z';
 }
+
+var date_sort_asc = function (date1, date2) {
+  if (date1 > date2) return 1;
+  if (date1 < date2) return -1;
+  return 0;
+};
 
