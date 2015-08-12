@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualise Pull Requests</title>
+
+  <link rel="shortcut icon" href="images/Graph_by_dw_noun_project.png" type="image/x-icon">
+  <link rel="icon" href="images/Graph_by_dw_noun_project.png" type="image/x-icon">
+
+<style type="text/css">
+  @import url(//fonts.googleapis.com/css?family=Montserrat:700);
+  body {
+  max-width: 30rem;
+  margin-left: auto ;
+  margin-right: auto ;
+  	color: #333;
+  }
+  h1, h2, h3, li, p {
+  	font-family: Montserrat, sans-serif;	
+  	line-height: 1.25;
+  	color: #111;
+  	text-rendering: optimizeLegibility;
+  }
+  h1 {
+  	text-align: center;
+  }
+
+</style>
+
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Graph pull requests from any Github repository</h1>
+      <h2></h2>
+      <br>
+    </div>
+    <h2 id="bookmarklet">How to use this bookmarklet</h2>
+
+<ol>
+  <li>Drag this link, <a href="javascript:(function(){
+  var url = buildURL();
+  if (url != null) {
+      var win = window.open(url, '_blank');
+      if ( win != null ) {
+        win.focus();    
+    }
+    }
+    else {
+    alert('Don\'t think you\'re on a github repository, sorry');
+  }
+})();
+
+function buildURL() {
+  baseURL = 'http://dhood.github.io/pullrequest-visualiser/plot.html';
+
+  url = null;
+  currentLink = window.location.href;
+  afterGithub = currentLink.match(/github.com\/(.*)/);
+  if ( afterGithub != null && afterGithub.length > 1 ) {
+    afterGithub = afterGithub[1];
+    pieces = afterGithub.split('/');
+    if ( pieces.length >= 2 ) {
+      repoOwner = pieces[0];
+      repoName = pieces[1];
+      url = baseURL + '?' + repoOwner + '/' + repoName;
+    }
+  }
+  return url;
+}">Graph PRs</a>, to your bookmarks bar.</li>
+  <li>Visit a Github <a href="https://github.com/KSP-CKAN/CKAN">repository</a> for which you’d like to graph the open pull requests over time.</li>
+  <li>Click the bookmarklet and a graph will open in a new window (once popups have been allowed, if necessary).</li>
+</ol>
+
+<center class="share-buttons">
+<iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?url=http://www.dhood.github.io/pullrequest-visualiser&amp;text=Now you can visualise github repositories' open pull requests over time" style="width:130px; height:20px;"></iframe>
+
+</center>
+
+
+<p><a id="help"></a></p>
+
+<h2 id="cant-find-your-bookmarks-bar">Can’t find your bookmarks bar?</h2>
+
+<p>Try these instructions to enable your bookmarks bar: <a href="https://support.google.com/chrome/answer/95745?hl=en">Chrome</a>,
+<a href="https://support.mozilla.org/en-US/kb/bookmarks-toolbar-display-favorite-websites#w_show-or-hide-the-bookmarks-toolbar">Firefox</a>, <a href="https://support.apple.com/kb/PH19265?locale=en_US">Safari</a>.</p>
+<br>
+<h3>Made by Deanna Hood</h3>
+
+
+</body>
+</html>
+
+
