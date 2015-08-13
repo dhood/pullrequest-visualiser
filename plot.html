@@ -50,7 +50,7 @@
           markerColor: markerColor_opened,
           markerType: markerType_opened,
           lineThickness: 3,
-          showInLegend: true,           
+          showInLegend: false,           
           name: "Open PRs", 
           legendText: "PR opened",
           xValueFormatString: "DD MMM 'YY HH:mm",
@@ -58,6 +58,15 @@
           toolTipContent: "{x}<br/>{name}: {y}"
         },
         // just for the legend of different types of markers:
+        {
+          type: "line",
+          color: lineColor,
+          markerColor: markerColor_opened,
+          markerType: markerType_opened,
+          showInLegend: true,
+          name: "PR opened",
+          dataPoints: []
+        },
         {
           type: "line",
           color: lineColor,
