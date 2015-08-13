@@ -6,6 +6,13 @@
   </div>
 </body>
 <head>  
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pull Requests</title>
+
+  <link rel="shortcut icon" href="images/Graph_by_dw_noun_project.png" type="image/png">
+  <link rel="icon" href="images/Graph_by_dw_noun_project.png" type="image/png">
 
   <script type="text/javascript" src="js/spin.min.js"></script>
   <script type="text/javascript">
@@ -24,7 +31,7 @@
       zoomEnabled: true,
       animationEnabled: true,
       title:{
-        text: "Pull Requests for " + repoOwner + "'s '" + repoName + "'"
+        text: getChartTitle()
       },
       axisX:{
         valueFormatString: "DD MMM 'YY HH:mm"
@@ -46,6 +53,7 @@
       data: [
         {        
           type: "line",
+          click: onClick,
           color: lineColor,
           markerColor: markerColor_opened,
           markerType: markerType_opened,
@@ -87,10 +95,16 @@
         }
       ]
       });
-chart.render();
-}
+  chart.render();
+    function onClick(e) {
+      var win = window.open(getPRurl(e.dataPoint.prNumber), '_blank')
+        if ( win != null ) {
+          win.focus();    
+      }
+    }
+  }
 
-</script>
+  </script>
   <script type="text/javascript" src="js/getPRs.js"></script>
   <script type="text/javascript" src="js/canvasjs.min.js"></script>
 </head>

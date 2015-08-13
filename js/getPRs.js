@@ -15,6 +15,10 @@ request.onload = processResponse
 queryParams = window.location.search.slice(1).split('/')
 repoOwner = queryParams[0]
 repoName = queryParams[1]
+if ( useTestData ) {
+	repoOwner = 'KSP-CKAN'
+	repoName = 'CKAN'
+}
 state = 'all'
 page = 1
 since = getSince()
@@ -74,10 +78,14 @@ function processResponse() {
 
 function processPRs(data) {
 	for (var i = 0; i < data.length; i++) {
-		openPRdata.push({ x: new Date(Date.parse(data[i].created_at)), y: ++count_openPRs })
+		prNumber = data[i].number;
+		openPRdata.push({ x: new Date(Date.parse(data[i].created_at)), 
+						  y: ++count_openPRs, prNumber: prNumber })
 		if (data[i].closed_at != null) {
 			boolMerged = data[i].merged_at != null
-			closedDatesToProcess.push({ date: new Date(Date.parse(data[i].closed_at)), merged: boolMerged })
+			closedDatesToProcess.push(
+				{ date: new Date(Date.parse(data[i].closed_at)), 
+				merged: boolMerged, prNumber: prNumber })
 		}
 	}
 }
@@ -114,7 +122,7 @@ function processClosedDates() {
 			markerColor = markerColor_closedunmerged
 		}
 		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: openPRdata[j-1].y-1, 
-					markerType: markerType, markerColor: markerColor })		
+					markerType: markerType, markerColor: markerColor, prNumber: closedDatesToProcess[i].prNumber })		
 	}
 }
 
@@ -129,6 +137,16 @@ var date_sort_asc = function (obj1, obj2) {
 	if (obj1.date < obj2.date) return -1;
 	return 0;
 };
+
+function getPRurl(prNumber) {
+	return 'https://github.com/' + repoOwner + '/' + repoName
+			 + '/pull/' + prNumber
+}
+
+function getChartTitle() {
+	return "Pull Requests for " + repoOwner + "'s '" + repoName + "'"
+			+ ' (zoomable and clickable)'
+}
 
 function spinnerOpts() {
 	return {
