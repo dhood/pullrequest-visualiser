@@ -29,13 +29,14 @@
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
   <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript">
-  $(function() {
+    $(function() {
     $( "#sincedatepicker" ).datepicker({
       defaultDate: "+1w",
       changeMonth: true,
       changeYear: true,
       onClose: function( selectedDate ) {
         $( "#uptodatepicker" ).datepicker( "option", "minDate", selectedDate );
+        $( "#uptodatepicker" ).datepicker( "option", "defaultDate", selectedDate );
       }
     });
     $( "#uptodatepicker" ).datepicker({
@@ -44,6 +45,7 @@
       changeYear: true,
       onClose: function( selectedDate ) {
         $( "#sincedatepicker" ).datepicker( "option", "maxDate", selectedDate );
+        $( "#sincedatepicker" ).datepicker( "option", "defaultDate", selectedDate );
       }
     });
   });
