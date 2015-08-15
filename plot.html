@@ -4,19 +4,52 @@
   <div id="spins"></div>
   <div id="chartContainer" style="height: 300px; width: 100%;">
   </div>
+  <div id="chartOptions" style='visibility:hidden;'>
+    </br>
+    <font face="futura">
+    Only show events from <input type="text" id="sincedatepicker"> 
+    to <input type="text" id="uptodatepicker"> </font>
+    <button id='setdatesbutton' onclick="setDateRange()">></button>
+    </br>
+    <button id='showallbutton' onclick="setShowAll()">show all</button>
+  </div>
 </body>
 <head>  
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pull Requests</title>
-
   <link rel="shortcut icon" href="images/Graph_by_dw_noun_project.png" type="image/png">
   <link rel="icon" href="images/Graph_by_dw_noun_project.png" type="image/png">
+  <title>Pull Requests</title>
+
 
   <script type="text/javascript" src="js/spin.min.js"></script>
-  <script type="text/javascript">
 
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    $( "#sincedatepicker" ).datepicker({
+      defaultDate: "+1w",
+      changeMonth: true,
+      changeYear: true,
+      onClose: function( selectedDate ) {
+        $( "#uptodatepicker" ).datepicker( "option", "minDate", selectedDate );
+      }
+    });
+    $( "#uptodatepicker" ).datepicker({
+      defaultDate: "+1w",
+      changeMonth: true,
+      changeYear: true,
+      onClose: function( selectedDate ) {
+        $( "#sincedatepicker" ).datepicker( "option", "maxDate", selectedDate );
+      }
+    });
+  });
+  </script>
+
+  <script type="text/javascript">
     markerColor_opened = 'grey'
     markerType_opened = 'circle'
     markerColor_closedmerged = '#2EB783'
@@ -62,7 +95,7 @@
           name: "Open PRs", 
           legendText: "PR opened",
           xValueFormatString: "DD MMM 'YY HH:mm",
-          dataPoints: openPRdata,
+          dataPoints: openPRdata_toShow,
           toolTipContent: "{x}<br/>{name}: {y}"
         },
         // just for the legend of different types of markers:

@@ -1,6 +1,7 @@
 useTestData = false
 count_openPRs = count_closedPRs = 0
 openPRdata = []
+var openPRdata_toShow
 closedPRdata = mergedPRdata = []
 closedDatesToProcess = mergedDatesToProcess = []
 
@@ -21,9 +22,8 @@ if ( useTestData ) {
 }
 state = 'all'
 page = 1
-since = getSince()
 
-apiRequestString = buildRequestString(repoOwner, repoName, state, page, since)
+apiRequestString = buildRequestString(repoOwner, repoName, state, page)
 request.open('get', apiRequestString)
 
 // Send it
@@ -35,14 +35,14 @@ if ( !useTestData ) {
 	spinner.spin(spinnerEl)
 }
 
-function buildRequestString(repoOwner, repoName, state, page, since) {
+function buildRequestString(repoOwner, repoName, state, page) {
 	if ( useTestData ) {
-		return 'testdata2.txt'
+		return 'testdata_desc.txt'
 	}
 	else {
 		return 'https://api.github.com/repos/' + repoOwner + '/' + repoName
-			 + '/pulls?state=' + state + '&page=' + page + '&since=' + since 
-			 + '&direction=asc&per_page=100'	
+			 + '/pulls?state=' + state + '&page=' + page
+			 + '&direction=desc&sort=created&per_page=100'	
 	}
 		 
 }
@@ -52,34 +52,37 @@ function processResponse() {
 	var responseObj = JSON.parse(this.responseText)
 
 	if ( !useTestData ) {
-
 		if (responseObj.length > 0) {	
-			processPRs(responseObj)	
 			// request the next page
 			page++
-			apiRequestString = buildRequestString(repoOwner, repoName, state, page, since)
+			apiRequestString = buildRequestString(repoOwner, repoName, state, page)
 			request.open('get', apiRequestString)
-			// Send it
-			request.send()	
+			request.send()		
+
+			processPRs(responseObj)	
 		}
 		else {
 			processClosedDates()
       		spinner.stop(spinnerEl)
-			plotData()
+      		displayGraphOptions()
+      		setShowAll()	
 		}
 
 	}
 	else {
 		processPRs(responseObj)
 		processClosedDates()
-		plotData()
+		displayGraphOptions()
+      	setShowAll()
 	}
 }
 
 function processPRs(data) {
 	for (var i = 0; i < data.length; i++) {
-		prNumber = data[i].number;
-		openPRdata.push({ x: new Date(Date.parse(data[i].created_at)), 
+		prNumber = data[i].number
+		openDate = new Date(Date.parse(data[i].created_at))
+
+		openPRdata.push({ x: openDate, 
 						  y: ++count_openPRs, prNumber: prNumber })
 		if (data[i].closed_at != null) {
 			boolMerged = data[i].merged_at != null
@@ -93,17 +96,18 @@ function processPRs(data) {
 
 function processClosedDates() {
 	closedDatesToProcess.sort(date_sort_asc)
+	openPRdata = openPRdata.reverse()
 
 	// decrement cumulative open PRs if some have been closed
 	var i, j = 0;
 	for (i = 0; i < closedDatesToProcess.length; i++) {
 		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i].date) {
-			openPRdata[j++].y -= i
+			openPRdata[j].y = (openPRdata.length - openPRdata[j++].y) -i
 		}
 	}
 	// continue for data points after the last close event
 	while ( j < openPRdata.length ) {
-		openPRdata[j++].y -= i
+		openPRdata[j++].y = (openPRdata.length - openPRdata[j++].y) -i
 	}
 
 
@@ -121,15 +125,37 @@ function processClosedDates() {
 			markerType = markerType_closedunmerged
 			markerColor = markerColor_closedunmerged
 		}
-		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: openPRdata[j-1].y-1, 
+		val = j>0 ? openPRdata[j-1].y-1 : -1
+		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: val, 
 					markerType: markerType, markerColor: markerColor, prNumber: closedDatesToProcess[i].prNumber })		
 	}
 }
 
-function getSince() {
-    var d = new Date();
-    d.setMonth(d.getMonth()-1)
-    return d.toISOString().slice(0, -5)+'Z';
+function filterPRdates() {
+	var i, j
+	for ( i=0; i<openPRdata.length && openPRdata[i].x < sinceDate; i++ );
+	for ( j=i; j<openPRdata.length && openPRdata[j].x < uptoDate; j++ );
+
+	openPRdata_toShow = openPRdata.slice(i,j)
+}
+
+function setDateRange() {
+	sinceDate = new Date(Date.parse(document.getElementById('sincedatepicker').value))
+	uptoDate = new Date(Date.parse(document.getElementById('uptodatepicker').value))
+	// include uptoDate in search range
+	uptoDate = new Date(uptoDate.getFullYear(), uptoDate.getMonth(), uptoDate.getDate()+1)
+    filterPRdates()
+    plotData()
+}
+
+function setShowAll() {
+	openPRdata_toShow = openPRdata
+	plotData()
+}
+
+
+function displayGraphOptions() {
+	document.getElementById('chartOptions').style.visibility='visible'
 }
 
 var date_sort_asc = function (obj1, obj2) {
