@@ -1,40 +1,37 @@
 useTestData = false
-count_openPRs = count_closedPRs = 0
+count_openPRs = 0
 openPRdata = []
 var openPRdata_toShow
 closedPRdata = mergedPRdata = []
 closedDatesToProcess = mergedDatesToProcess = []
+state = 'all' // which PRs to retrieve in API call
+
+var request = new XMLHttpRequest() // Create a new request object
+request.onload = processResponse // Set the event handler
 
 
-// Create a new request object
-var request = new XMLHttpRequest();
-
-// Set the event handler
-request.onload = processResponse
-
-// Initialize a request
+// get requested repository
 queryParams = window.location.search.slice(1).split('/')
 repoOwner = queryParams[0]
 repoName = queryParams[1]
 if ( useTestData ) {
-	repoOwner = 'KSP-CKAN'
-	repoName = 'CKAN'
+	repoOwner = 'testOwner'
+	repoName = 'testRepo'
 }
-state = 'all'
-page = 1
 
+// start a spinner while graph data is being prepared
+if ( !useTestData ) {
+	startSpinner('spins')
+}
+
+
+// Initialize an api request
+page = 1
 apiRequestString = buildRequestString(repoOwner, repoName, state, page)
 request.open('get', apiRequestString)
+request.send() // Send api request
 
-// Send it
-request.send()
-
-if ( !useTestData ) {
-	var spinnerEl = document.getElementById('spins')
-	var spinner = new Spinner(spinnerOpts())
-	spinner.spin(spinnerEl)
-}
-
+// builds url api request from search parameters
 function buildRequestString(repoOwner, repoName, state, page) {
 	if ( useTestData ) {
 		return 'testdata_desc.txt'
@@ -47,6 +44,7 @@ function buildRequestString(repoOwner, repoName, state, page) {
 		 
 }
 
+// callback for when api response is received
 function processResponse() {
 	// process info
 	var responseObj = JSON.parse(this.responseText)
@@ -63,7 +61,7 @@ function processResponse() {
 		}
 		else {
 			processClosedDates()
-      		spinner.stop(spinnerEl)
+			stopSpinner()
       		displayGraphOptions()
       		setShowAll()	
 		}
@@ -77,13 +75,14 @@ function processResponse() {
 	}
 }
 
+// called after a group of PRs have been received (1 page of api request returned)
 function processPRs(data) {
 	for (var i = 0; i < data.length; i++) {
 		prNumber = data[i].number
 		openDate = new Date(Date.parse(data[i].created_at))
 
 		openPRdata.push({ x: openDate, 
-						  y: ++count_openPRs, prNumber: prNumber })
+						  y: count_openPRs++, prNumber: prNumber })
 		if (data[i].closed_at != null) {
 			boolMerged = data[i].merged_at != null
 			closedDatesToProcess.push(
@@ -93,7 +92,8 @@ function processPRs(data) {
 	}
 }
 
-
+// called after all of the PRs have been received 
+// (only cummulative PR info is stored before then, want the #open at each date)
 function processClosedDates() {
 	closedDatesToProcess.sort(date_sort_asc)
 	openPRdata = openPRdata.reverse()
@@ -101,20 +101,22 @@ function processClosedDates() {
 	// decrement cumulative open PRs if some have been closed
 	var i, j = 0;
 	for (i = 0; i < closedDatesToProcess.length; i++) {
-		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i].date) {
-			openPRdata[j].y = (openPRdata.length - openPRdata[j++].y) -i
+		while (j < openPRdata.length 
+			&& openPRdata[j].x <= closedDatesToProcess[i].date) {
+			openPRdata[j].y = (openPRdata.length - openPRdata[j++].y) - i
 		}
 	}
 	// continue for data points after the last close event
 	while ( j < openPRdata.length ) {
-		openPRdata[j++].y = (openPRdata.length - openPRdata[j++].y) -i
+		openPRdata[j].y = (openPRdata.length - openPRdata[j++].y) - i
 	}
 
 
 	// second pass to insert the closed-date data points
 	var j = 0;
 	for (var i = 0; i < closedDatesToProcess.length; i++) {
-		while (j < openPRdata.length && openPRdata[j].x <= closedDatesToProcess[i].date) {
+		while (j < openPRdata.length 
+			&& openPRdata[j].x <= closedDatesToProcess[i].date) {
 			j++;
 		}
 		if ( closedDatesToProcess[i].merged ) {
@@ -127,9 +129,18 @@ function processClosedDates() {
 		}
 		val = j>0 ? openPRdata[j-1].y-1 : -1
 		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: val, 
-					markerType: markerType, markerColor: markerColor, prNumber: closedDatesToProcess[i].prNumber })		
+					markerType: markerType, markerColor: markerColor, 
+					prNumber: closedDatesToProcess[i].prNumber })		
 	}
 }
+
+var date_sort_asc = function (obj1, obj2) {
+	if (obj1.date > obj2.date) return 1;
+	if (obj1.date < obj2.date) return -1;
+	return 0;
+};
+
+// -------------------------- functions for responding to graph/GUI events
 
 function filterPRdates() {
 	var i, j
@@ -143,7 +154,8 @@ function setDateRange() {
 	sinceDate = new Date(Date.parse(document.getElementById('sincedatepicker').value))
 	uptoDate = new Date(Date.parse(document.getElementById('uptodatepicker').value))
 	// include uptoDate in search range
-	uptoDate = new Date(uptoDate.getFullYear(), uptoDate.getMonth(), uptoDate.getDate()+1)
+	uptoDate = new Date(uptoDate.getFullYear(), 
+		uptoDate.getMonth(), uptoDate.getDate()+1)
     filterPRdates()
     plotData()
 }
@@ -152,17 +164,6 @@ function setShowAll() {
 	openPRdata_toShow = openPRdata
 	plotData()
 }
-
-
-function displayGraphOptions() {
-	document.getElementById('chartOptions').style.visibility='visible'
-}
-
-var date_sort_asc = function (obj1, obj2) {
-	if (obj1.date > obj2.date) return 1;
-	if (obj1.date < obj2.date) return -1;
-	return 0;
-};
 
 function getPRurl(prNumber) {
 	return 'https://github.com/' + repoOwner + '/' + repoName
@@ -174,28 +175,4 @@ function getChartTitle() {
 			+ ' (zoomable and clickable)'
 }
 
-function spinnerOpts() {
-	return {
-		  lines: 7 // The number of lines to draw
-		, length: 35 // The length of each line
-		, width: 18 // The line thickness
-		, radius: 48 // The radius of the inner circle
-		, scale: 0.5 // Scales overall size of the spinner
-		, corners: 0.5 // Corner roundness (0..1)
-		, color: '#000' // #rgb or #rrggbb or array of colors
-		, opacity: 0.25 // Opacity of the lines
-		, rotate: 0 // The rotation offset
-		, direction: -1 // 1: clockwise, -1: counterclockwise
-		, speed: 0.5 // Rounds per second
-		, trail: 89 // Afterglow percentage
-		, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-		, zIndex: 2e9 // The z-index (defaults to 2000000000)
-		, className: 'spinner' // The CSS class to assign to the spinner
-		, top: '50%' // Top position relative to parent
-		, left: '50%' // Left position relative to parent
-		, shadow: false // Whether to render a shadow
-		, hwaccel: false // Whether to use hardware acceleration
-		, position: 'absolute' // Element positioning
-		}
-}
 

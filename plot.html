@@ -1,9 +1,11 @@
 <!DOCTYPE HTML>
 <html>
+
 <body>
   <div id="spins"></div>
-  <div id="chartContainer" style="height: 300px; width: 100%;">
-  </div>
+
+  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+
   <div id="chartOptions" style='visibility:hidden;'>
     </br>
     <font face="futura">
@@ -13,8 +15,11 @@
     </br>
     <button id='showallbutton' onclick="setShowAll()">show all</button>
   </div>
+
 </body>
+
 <head>  
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,125 +28,17 @@
   <title>Pull Requests</title>
 
 
-  <script type="text/javascript" src="js/spin.min.js"></script>
+  <script type="text/javascript" src="js/third_party/spin.min.js"></script>
+  <script type="text/javascript" src="js/loadingSpinner.js"></script>
 
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
   <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <script type="text/javascript">
-    $(function() {
-    $( "#sincedatepicker" ).datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      changeYear: true,
-      onClose: function( selectedDate ) {
-        $( "#uptodatepicker" ).datepicker( "option", "minDate", selectedDate );
-        $( "#uptodatepicker" ).datepicker( "option", "defaultDate", selectedDate );
-      }
-    });
-    $( "#uptodatepicker" ).datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      changeYear: true,
-      onClose: function( selectedDate ) {
-        $( "#sincedatepicker" ).datepicker( "option", "maxDate", selectedDate );
-        $( "#sincedatepicker" ).datepicker( "option", "defaultDate", selectedDate );
-      }
-    });
-  });
-  </script>
+  <script src="js/calendars.js" type="text/javascript"></script>
 
-  <script type="text/javascript">
-    markerColor_opened = 'grey'
-    markerType_opened = 'circle'
-    markerColor_closedmerged = '#2EB783'
-    markerType_closedmerged = 'triangle'
-    markerColor_closedunmerged = 'red'
-    markerType_closedunmerged = 'cross'
-    lineColor = 'lightgrey'
-
-    function plotData() {
-    var chart = new CanvasJS.Chart("chartContainer",
-    {
-      zoomEnabled: true,
-      animationEnabled: true,
-      title:{
-        text: getChartTitle()
-      },
-      axisX:{
-        valueFormatString: "DD MMM 'YY HH:mm"
-      },
-      axisY:{
-        interlacedColor: "#F5F5F5",
-        includeZero: true
-      },
-      theme: "theme1",
-      toolTip:{
-              shared: true
-      },
-      legend:{
-        verticalAlign: "bottom",
-        horizontalAlign: "center",
-        fontFamily: "Lucida Sans Unicode"
-
-      },
-      data: [
-        {        
-          type: "line",
-          click: onClick,
-          color: lineColor,
-          markerColor: markerColor_opened,
-          markerType: markerType_opened,
-          lineThickness: 3,
-          showInLegend: false,           
-          name: "Open PRs", 
-          legendText: "PR opened",
-          xValueFormatString: "DD MMM 'YY HH:mm",
-          dataPoints: openPRdata_toShow,
-          toolTipContent: "{x}<br/>{name}: {y}"
-        },
-        // just for the legend of different types of markers:
-        {
-          type: "line",
-          color: lineColor,
-          markerColor: markerColor_opened,
-          markerType: markerType_opened,
-          showInLegend: true,
-          name: "PR opened",
-          dataPoints: []
-        },
-        {
-          type: "line",
-          color: lineColor,
-          markerColor: markerColor_closedmerged,
-          markerType: markerType_closedmerged,
-          showInLegend: true,
-          name: "PR merged",
-          dataPoints: []
-        },
-        {
-          type: "line",
-          color: lineColor,
-          markerColor: markerColor_closedunmerged,
-          markerType: markerType_closedunmerged,
-          showInLegend: true,
-          name: "PR closed unmerged",
-          dataPoints: []
-        }
-      ]
-      });
-  chart.render();
-    function onClick(e) {
-      var win = window.open(getPRurl(e.dataPoint.prNumber), '_blank')
-        if ( win != null ) {
-          win.focus();    
-      }
-    }
-  }
-
-  </script>
+  <script type="text/javascript" src="js/third_party/canvasjs.min.js"></script>
+  <script type="text/javascript" src="js/chart.js">  </script>
   <script type="text/javascript" src="js/getPRs.js"></script>
-  <script type="text/javascript" src="js/canvasjs.min.js"></script>
 </head>
 
 </html>
