@@ -6,14 +6,33 @@
 
   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 
-  <div id="chartOptions" style='visibility:hidden;'>
+  <div id="chartOptions" style="visibility:hidden; width:250px; margin:0 auto;">
     </br>
     <font face="futura">
-    Only show events from <input type="text" id="sincedatepicker"> 
-    to <input type="text" id="uptodatepicker"> </font>
-    <button id='setdatesbutton' onclick="setDateRange()">></button>
+    Showing <span id='eventsShown'></span> events
+    </br> </br>
+
+    <span style="margin-top:7px; display: inline-block;">
+      Show all events <button id='showallbutton' onclick="setShowAll()">></button>
+    </span>
     </br>
-    <button id='showallbutton' onclick="setShowAll()">show all</button>
+
+    <span style="margin-top:7px; display: inline-block;">
+      Only show last <input type="text" id="nEvents" style="width: 30px;"
+      onkeyup="if (event.keyCode == 13) document.getElementById('setNeventsButton').click()"> 
+      events <button id='setNeventsButton' onclick="showLastNevents()">></button>
+    </span>
+    </br>
+
+    <span style="margin-top:7px; display: inline-block;">
+      Only show events from <input type="text" id="sincedatepicker" style="width: 80px;"
+      onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()"> 
+      to <input type="text" id="uptodatepicker" style="width: 80px;"
+      onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()">  
+      <button id='setdatesbutton' onclick="setDateRange()">></button>
+    </span>
+    </br>
+    </font>
   </div>
 
 </body>
@@ -39,6 +58,7 @@
   <script type="text/javascript" src="js/third_party/canvasjs.min.js"></script>
   <script type="text/javascript" src="js/chart.js">  </script>
   <script type="text/javascript" src="js/getPRs.js"></script>
+
 </head>
 
 </html>

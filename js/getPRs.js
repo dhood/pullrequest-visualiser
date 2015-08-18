@@ -1,4 +1,4 @@
-useTestData = false
+useTestData = true
 count_openPRs = 0
 openPRdata = []
 var openPRdata_toShow
@@ -63,7 +63,7 @@ function processResponse() {
 			processClosedDates()
 			stopSpinner()
       		displayGraphOptions()
-      		setShowAll()	
+      		showLastNevents(50)	
 		}
 
 	}
@@ -71,7 +71,7 @@ function processResponse() {
 		processPRs(responseObj)
 		processClosedDates()
 		displayGraphOptions()
-      	setShowAll()
+      	showLastNevents	(50)	
 	}
 }
 
@@ -127,7 +127,7 @@ function processClosedDates() {
 			markerType = markerType_closedunmerged
 			markerColor = markerColor_closedunmerged
 		}
-		val = j>0 ? openPRdata[j-1].y-1 : -1
+		val = j>0 ? openPRdata[j-1].y-1 : -1 // comes
 		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: val, 
 					markerType: markerType, markerColor: markerColor, 
 					prNumber: closedDatesToProcess[i].prNumber })		
@@ -142,11 +142,16 @@ var date_sort_asc = function (obj1, obj2) {
 
 // -------------------------- functions for responding to graph/GUI events
 
-function filterPRdates() {
+function filterPRdates(sinceDate, uptoDate) {
 	var i, j
-	for ( i=0; i<openPRdata.length && openPRdata[i].x < sinceDate; i++ );
-	for ( j=i; j<openPRdata.length && openPRdata[j].x < uptoDate; j++ );
 
+	if ( !isNaN(sinceDate) ) {  // optional argument
+		for ( i=0; i<openPRdata.length && openPRdata[i].x < sinceDate; i++ );
+	}
+	if ( !isNaN(uptoDate) ) {	// optional argument
+		for ( j = isNaN(sinceDate) ? 0 : i; 
+			   j<openPRdata.length && openPRdata[j].x < uptoDate; j++ );
+	}
 	openPRdata_toShow = openPRdata.slice(i,j)
 }
 
@@ -156,8 +161,18 @@ function setDateRange() {
 	// include uptoDate in search range
 	uptoDate = new Date(uptoDate.getFullYear(), 
 		uptoDate.getMonth(), uptoDate.getDate()+1)
-    filterPRdates()
+    filterPRdates(sinceDate, uptoDate)
     plotData()
+}
+
+function showLastNevents(N) {
+	if ( null == N ) {
+		N = parseInt(document.getElementById('nEvents').value)
+	}
+	if ( !isNaN(N) ) {
+		openPRdata_toShow = openPRdata.slice(openPRdata.length - N)
+		plotData()
+	}
 }
 
 function setShowAll() {

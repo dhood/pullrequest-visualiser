@@ -7,6 +7,8 @@ markerType_closedunmerged = 'cross'
 lineColor = 'lightgrey'
 
 function plotData() {
+  document.getElementById('eventsShown').innerHTML = openPRdata_toShow.length
+  
   var chart = new CanvasJS.Chart("chartContainer",
   {
     zoomEnabled: true,
