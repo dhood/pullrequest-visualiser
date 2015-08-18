@@ -8,7 +8,7 @@ lineColor = 'lightgrey'
 
 function plotData() {
   document.getElementById('eventsShown').innerHTML = openPRdata_toShow.length
-  
+
   var chart = new CanvasJS.Chart("chartContainer",
   {
     zoomEnabled: true,
@@ -20,6 +20,8 @@ function plotData() {
       valueFormatString: "DD MMM 'YY HH:mm"
     },
     axisY:{
+      titleFontSize: 15,
+      title: "# open PRs at each event",
       interlacedColor: "#F5F5F5",
       includeZero: true
     },

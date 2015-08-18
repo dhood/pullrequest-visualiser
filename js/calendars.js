@@ -1,6 +1,7 @@
 $(function() {
   $( "#sincedatepicker" ).datepicker({
     defaultDate: "+1w",
+    showButtonPanel: true,
     changeMonth: true,
     changeYear: true,
     onClose: function( selectedDate ) {
@@ -10,6 +11,7 @@ $(function() {
   });
   $( "#uptodatepicker" ).datepicker({
     defaultDate: "+1w",
+    showButtonPanel: true,
     changeMonth: true,
     changeYear: true,
     onClose: function( selectedDate ) {
@@ -18,3 +20,8 @@ $(function() {
     }
   });
 });
+/*
+$.datepicker._gotoToday = function(id) { 
+    $(id).datepicker('setDate', new Date()); 
+};
+*/

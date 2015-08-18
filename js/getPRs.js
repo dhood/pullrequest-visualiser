@@ -1,4 +1,4 @@
-useTestData = true
+useTestData = false
 count_openPRs = 0
 openPRdata = []
 var openPRdata_toShow

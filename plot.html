@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html>
 
-<body>
+<body link="darkgrey" vlink="grey">
   <div id="spins"></div>
 
   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 
-  <div id="chartOptions" style="visibility:hidden; width:250px; margin:0 auto;">
-    </br>
+  <div id="chartOptions" style="visibility:hidden; width:240px; margin:0 auto;">
+    </br><br>
     <font face="futura">
     Showing <span id='eventsShown'></span> events
     </br> </br>
@@ -31,9 +31,21 @@
       onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()">  
       <button id='setdatesbutton' onclick="setDateRange()">></button>
     </span>
-    </br>
+    </br>   
     </font>
   </div>
+
+<br><br><br>
+  <div id="contributions" style="max-width: 20rem; margin:0 auto;">
+    <font face="futura">
+      <center>
+      <span><a href="http://dhood.github.io/pullrequest-visualiser">Install the bookmarklet</a>
+      </span>
+      <br>
+      <span style="margin-top:10px; display:inline-block"> Open source contributions welcome at <a href="http://www.github.com/dhood/pullrequest-visualiser">dhood/pullrequest-visualiser</a>
+      </span>
+    </center>
+    </font>
 
 </body>
 
