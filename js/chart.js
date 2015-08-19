@@ -14,6 +14,7 @@ function plotData() {
   {
     zoomEnabled: true,
     animationEnabled: true,
+    exportEnabled: true,
     title:{
       text: getChartTitle()
     },
@@ -50,7 +51,7 @@ function plotData() {
         legendText: "PR opened",
         xValueFormatString: "DD MMM 'YY HH:mm",
         dataPoints: openPRdata_toShow,
-        toolTipContent: "{x}<br/>{name}: {y}"
+        toolTipContent: "<center>{x}<br/>{name}: {y}<br/>{eventTitle}</center>"
       },
       // just for the legend of different types of markers:
       {

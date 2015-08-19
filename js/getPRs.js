@@ -79,15 +79,17 @@ function processResponse() {
 function processPRs(data) {
 	for (var i = 0; i < data.length; i++) {
 		prNumber = data[i].number
+		prTitle = data[i].title
+		eventTitle = 'Opened: \''+prTitle.slice(0,20)+ (prTitle.length>20 ? '...\'':'\'')
 		openDate = new Date(Date.parse(data[i].created_at))
 
-		openPRdata.push({ x: openDate, 
-						  y: count_openPRs++, prNumber: prNumber })
+		openPRdata.push({ x: openDate, y: count_openPRs++, 
+					prNumber: prNumber, eventTitle: eventTitle })
 		if (data[i].closed_at != null) {
 			boolMerged = data[i].merged_at != null
 			closedDatesToProcess.push(
 				{ date: new Date(Date.parse(data[i].closed_at)), 
-				merged: boolMerged, prNumber: prNumber })
+				merged: boolMerged, prNumber: prNumber, prTitle: prTitle })
 		}
 	}
 }
@@ -117,20 +119,26 @@ function processClosedDates() {
 	for (var i = 0; i < closedDatesToProcess.length; i++) {
 		while (j < openPRdata.length 
 			&& openPRdata[j].x <= closedDatesToProcess[i].date) {
-			j++;
+			j++
 		}
+		prTitle = closedDatesToProcess[i].prTitle
+		var eventTitle = prTitle.slice(0,20)+ (prTitle.length>20 ? '...\'':'\'')
 		if ( closedDatesToProcess[i].merged ) {
 			markerType = markerType_closedmerged
 			markerColor = markerColor_closedmerged
+			eventTitle = 'Merged: \'' + eventTitle
+
 		}
 		else {
 			markerType = markerType_closedunmerged
 			markerColor = markerColor_closedunmerged
+			eventTitle = 'Closed: \'' + eventTitle
 		}
 		val = j>0 ? openPRdata[j-1].y-1 : -1 // comes
 		openPRdata.splice(j, 0, { x: closedDatesToProcess[i].date, y: val, 
 					markerType: markerType, markerColor: markerColor, 
-					prNumber: closedDatesToProcess[i].prNumber })		
+					prNumber: closedDatesToProcess[i].prNumber,
+					eventTitle: eventTitle })		
 	}
 }
 
