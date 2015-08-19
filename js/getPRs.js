@@ -19,7 +19,7 @@ repoOwner = queryParams[0]
 repoName = queryParams[1]
 
 // fallback if new query string format (should still be more sophisticated)
-if (isNaN(repoName)) {
+if (repoName ==  null) {
 	queryParams = queryComponent.slice(1).split('&')
 	repoOwner = queryParams[0]
 	repoName = queryParams[1]
