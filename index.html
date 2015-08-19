@@ -10,6 +10,10 @@
   <link rel="shortcut icon" href="images/Graph_by_dw_noun_project.png" type="image/x-icon">
   <link rel="icon" href="images/Graph_by_dw_noun_project.png" type="image/x-icon">
 
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
 <style type="text/css">
   body {
   font-family: futura, sans-serif;
@@ -73,16 +77,17 @@ function buildURL() {
   return url;
 }">Graph PRs</a>, to your bookmarks bar.</li>
   <li>Visit a Github <a href="https://github.com/KSP-CKAN/CKAN">repository</a> for which you’d like to graph the open pull requests over time.</li>
-  <li>Click the bookmarklet and a graph will open in a new window (once popups have been allowed, if necessary).</li>
+  <li>Click the bookmarklet and a <a href="#dialog">graph</a> will open in a new window (once popups have been allowed, if necessary).</li>
 </ol>
+<div id="dialog" title="Example graph" >
+  <img src="images/sampleGraph.png" alt="Sample graph" style="width:30rem;">
+</div>
 
 <center class="share-buttons">
-<iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?url=http://www.dhood.github.io/pullrequest-visualiser&amp;text=Now you can visualise github repositories' open pull requests over time" style="width:130px; height:20px;"></iframe>
+<iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?url=http://dhood.github.io/pullrequest-visualiser&amp;text=Now you can visualise github repositories' open pull requests over time" style="width:130px; height:20px;"></iframe>
 
 </center>
 
-
-<p><a id="help"></a></p>
 
 <h2 id="cant-find-your-bookmarks-bar">Can’t find your bookmarks bar?</h2>
 
@@ -91,6 +96,30 @@ function buildURL() {
 
 <span style="margin-top:15px; display:inline-block; font-size:13px">Made by Deanna Hood. Open source contributions welcome at <a href="http://www.github.com/dhood/pullrequest-visualiser">github.com/dhood/pullrequest-visualiser</a>
 </span>
+
+
+
+
+<script type="text/javascript">
+  $(function() {
+    $( "#dialog" ).dialog({
+      width: 500,
+      autoOpen: false,
+      show: {
+        //effect: "blind",
+        duration: 1000
+      },
+      hide: {
+        //effect: "explode",
+        duration: 1000
+      }
+    });
+ 
+    $( 'a[href=\\#dialog]' ).on( 'click', function() {
+      $( "#dialog" ).dialog( "open" );
+    });
+  });
+  </script>
 
 
 </body>
