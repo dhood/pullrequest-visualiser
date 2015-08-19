@@ -170,7 +170,7 @@ function showLastNevents(N) {
 		N = parseInt(document.getElementById('nEvents').value)
 	}
 	if ( !isNaN(N) ) {
-		openPRdata_toShow = openPRdata.slice(openPRdata.length - N)
+		openPRdata_toShow = openPRdata.slice(Math.max(0, openPRdata.length - N))
 		plotData()
 	}
 }
