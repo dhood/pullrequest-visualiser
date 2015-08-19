@@ -46,32 +46,42 @@ function buildRequestString(repoOwner, repoName, state, page) {
 
 // callback for when api response is received
 function processResponse() {
-	// process info
-	var responseObj = JSON.parse(this.responseText)
-
-	if ( !useTestData ) {
-		if (responseObj.length > 0) {	
-			// request the next page
-			page++
-			apiRequestString = buildRequestString(repoOwner, repoName, state, page)
-			request.open('get', apiRequestString)
-			request.send()		
-
-			processPRs(responseObj)	
-		}
-		else {
-			processClosedDates()
-			stopSpinner()
-      		displayGraphOptions()
-      		showLastNevents(50)	
-		}
-
+	if (this.status == 403) {
+		alert('Sorry, GitHub API rate limit exceeded. Please try again later.')
+		processClosedDates()
+		stopSpinner()
+  		displayGraphOptions()
+  		showLastNevents(50)	
 	}
 	else {
-		processPRs(responseObj)
-		processClosedDates()
-		displayGraphOptions()
-      	showLastNevents	(50)	
+
+		// process info
+		var responseObj = JSON.parse(this.responseText)
+
+		if ( !useTestData ) {
+			if (responseObj.length > 0) {	
+				// request the next page
+				page++
+				apiRequestString = buildRequestString(repoOwner, repoName, state, page)
+				request.open('get', apiRequestString)
+				request.send()		
+
+				processPRs(responseObj)	
+			}
+			else {
+				processClosedDates()
+				stopSpinner()
+	      		displayGraphOptions()
+	      		showLastNevents(50)	
+			}
+
+		}
+		else {
+			processPRs(responseObj)
+			processClosedDates()
+			displayGraphOptions()
+	      	showLastNevents	(50)	
+		}
 	}
 }
 
