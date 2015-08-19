@@ -187,7 +187,6 @@ function getPRurl(prNumber) {
 
 function getChartTitle() {
 	return "Pull Requests for " + repoOwner + "'s '" + repoName + "'"
-			+ ' (zoomable and clickable)'
 }
 
 

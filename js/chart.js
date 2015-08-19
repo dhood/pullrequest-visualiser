@@ -8,6 +8,7 @@ lineColor = 'lightgrey'
 
 function plotData() {
   document.getElementById('eventsShown').innerHTML = openPRdata_toShow.length
+      + ' / ' + openPRdata.length
 
   var chart = new CanvasJS.Chart("chartContainer",
   {
@@ -39,6 +40,7 @@ function plotData() {
       {        
         type: "line",
         click: onClick,
+        cursor: "pointer",
         color: lineColor,
         markerColor: markerColor_opened,
         markerType: markerType_opened,

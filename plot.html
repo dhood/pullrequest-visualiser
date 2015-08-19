@@ -6,12 +6,15 @@
 
   <div id="chartContainer" style="height: 300px; width: 100%;"></div>
 
-  <div id="chartOptions" style="visibility:hidden; width:240px; margin:0 auto;">
+  <div id="chartOptions" style="visibility:hidden;">
+    <div style="width:290px; margin:0 auto;">
     </br><br>
     <font face="futura">
-    Showing <span id='eventsShown'></span> events
-    </br> </br>
+    Showing <span id='eventsShown'></span> events (zoomable)
+  </div>
 
+    </br> </br>
+  <div style="width:240px; margin:0 auto;">
     <span style="margin-top:7px; display: inline-block;">
       Show all events <button id='showallbutton' onclick="setShowAll()">></button>
     </span>
@@ -34,6 +37,7 @@
     </br>   
     </font>
   </div>
+</div>
 
 <br><br><br>
   <div id="contributions" style="max-width: 20rem; margin:0 auto;">
