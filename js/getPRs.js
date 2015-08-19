@@ -11,9 +11,20 @@ request.onload = processResponse // Set the event handler
 
 
 // get requested repository
-queryParams = window.location.search.slice(1).split('/')
+queryComponent = window.location.search
+
+// workaround for when slashes used to be used
+queryParams = queryComponent.slice(1).split('/')
 repoOwner = queryParams[0]
 repoName = queryParams[1]
+
+// fallback if new query string format (should still be more sophisticated)
+if (isNaN(repoName)) {
+	queryParams = queryComponent.slice(1).split('&')
+	repoOwner = queryParams[0]
+	repoName = queryParams[1]
+}
+
 if ( useTestData ) {
 	repoOwner = 'testOwner'
 	repoName = 'testRepo'

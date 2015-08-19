@@ -71,7 +71,7 @@ function buildURL() {
     if ( pieces.length >= 2 ) {
       repoOwner = pieces[0];
       repoName = pieces[1];
-      url = baseURL + '?' + repoOwner + '/' + repoName;
+      url = baseURL + '?' + repoOwner + '&' + repoName;
     }
   }
   return url;
