@@ -7,8 +7,11 @@ markerType_closedunmerged = 'cross'
 lineColor = 'lightgrey'
 
 function plotData() {
+  displayGraph()
+  
   document.getElementById('eventsShown').innerHTML = openPRdata_toShow.length
       + ' / ' + openPRdata.length
+
 
   var chart = new CanvasJS.Chart("chartContainer",
   {
@@ -92,8 +95,4 @@ function plotData() {
         win.focus();    
     }
   }
-}
-
-function displayGraphOptions() {
-  document.getElementById('chartOptions').style.visibility='visible'
 }

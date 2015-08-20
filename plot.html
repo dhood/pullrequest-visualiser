@@ -2,54 +2,76 @@
 <html>
 
 <body link="darkgrey" vlink="grey">
+
+  <font face="futura">
   <div id="spins"></div>
 
-  <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+  <div id="chartContainer" style="height: 300px; width: 100%; display: none"></div>
 
-  <div id="chartOptions" style="visibility:hidden;">
+
+  <div id="repoInfoOptions" style="display:none; margin: 0 auto; margin-top: 100px">
+    <center>
+    Details of repository to graph pull requests for
+    <br><br>
+    Repository owner 
+    <input type="text" id="repoOwnerInput" style="width: 100px;"
+      onkeyup="if (event.keyCode == 13) document.getElementById('setRepoOptions').click()"> 
+
+    Repository name 
+    <input type="text" id="repoNameInput" style="width: 100px;"
+      onkeyup="if (event.keyCode == 13) document.getElementById('setRepoOptions').click()"> 
+
+    <button id='setRepoOptions' onclick="setRepoOptions()">></button>
+    <center>
+  </div>
+
+
+  <div id="chartOptions" style="display:none;">
     <div style="width:290px; margin:0 auto;">
     </br><br>
-    <font face="futura">
     Showing <span id='eventsShown'></span> events (zoomable)
-  </div>
+    </div>
+
 
     </br> </br>
-  <div style="width:240px; margin:0 auto;">
-    <span style="margin-top:7px; display: inline-block;">
-      Show all events <button id='showallbutton' onclick="setShowAll()">></button>
-    </span>
-    </br>
+    <div style="width:240px; margin:0 auto;">
+      <span style="margin-top:7px; display: inline-block;">
+        Show all events <button id='showallbutton' onclick="setShowAll()">></button>
+      </span>
+      </br>
 
-    <span style="margin-top:7px; display: inline-block;">
-      Only show last <input type="text" id="nEvents" style="width: 30px;"
-      onkeyup="if (event.keyCode == 13) document.getElementById('setNeventsButton').click()"> 
-      events <button id='setNeventsButton' onclick="showLastNevents()">></button>
-    </span>
-    </br>
+      <span style="margin-top:7px; display: inline-block;">
+        Only show last <input type="text" id="nEvents" style="width: 30px;"
+        onkeyup="if (event.keyCode == 13) document.getElementById('setNeventsButton').click()"> 
+        events <button id='setNeventsButton' onclick="showLastNevents()">></button>
+      </span>
+      </br>
 
-    <span style="margin-top:7px; display: inline-block;">
-      Only show events from <input type="text" id="sincedatepicker" style="width: 80px;"
-      onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()"> 
-      to <input type="text" id="uptodatepicker" style="width: 80px;"
-      onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()">  
-      <button id='setdatesbutton' onclick="setDateRange()">></button>
-    </span>
-    </br>   
-    </font>
+      <span style="margin-top:7px; display: inline-block;">
+        Only show events from <input type="text" id="sincedatepicker" style="width: 80px;"
+        onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()"> 
+        to <input type="text" id="uptodatepicker" style="width: 80px;"
+        onkeyup="if (event.keyCode == 13) document.getElementById('setdatesbutton').click()">  
+        <button id='setdatesbutton' onclick="setDateRange()">></button>
+      </span>
+      </br>   
+    </div>
+
   </div>
-</div>
 
-<br><br><br>
-  <div id="contributions" style="width:240; margin:0 auto;">
-    <font face="futura">
-      <center>
+  <div id="footer" style="width: 240; margin: 0 auto; visibility: hidden;">
+    <br><br><br>
+    <center>
       <span><a href="http://dhood.github.io/pullrequest-visualiser">Install the bookmarklet</a>
       </span>
       <br>
-      <span style="margin-top:10px; display:inline-block"> Open source contributions welcome at <a href="http://www.github.com/dhood/pullrequest-visualiser">dhood/pullrequest-visualiser</a>
+      <span style="margin-top:10px; display:inline-block"> Open source contributions welcome at 
+        <a href="http://www.github.com/dhood/pullrequest-visualiser">dhood/pullrequest-visualiser</a>
       </span>
     </center>
-    </font>
+  </div>
+
+</font>
 
 </body>
 

@@ -1,46 +1,70 @@
 useTestData = false
 count_openPRs = 0
-openPRdata = []
-var openPRdata_toShow
-closedPRdata = mergedPRdata = []
-closedDatesToProcess = mergedDatesToProcess = []
+openPRdata = openPRdata_toShow = []
+closedDatesToProcess = []
 state = 'all' // which PRs to retrieve in API call
 
 var request = new XMLHttpRequest() // Create a new request object
 request.onload = processResponse // Set the event handler
 
+main()
 
-// get requested repository
-queryComponent = window.location.search
+function main() {
 
-// workaround for when slashes used to be used
-queryParams = queryComponent.slice(1).split('/')
-repoOwner = queryParams[0]
-repoName = queryParams[1]
+	hideGraph()
+	hideGraphOptions()
+	hideRepoInfoOptions()
+	hideFooter()
 
-// fallback if new query string format (should still be more sophisticated)
-if (repoName ==  null) {
-	queryParams = queryComponent.slice(1).split('&')
-	repoOwner = queryParams[0]
-	repoName = queryParams[1]
+	// get requested repository from URL, if present
+	queryString = window.location.search.slice(1)
+
+	// slashes are no longer used but should still be supported
+	queryInfo = parseLegacyQueryString(queryString)
+	repoOwner = queryInfo.repoOwner
+	repoName = queryInfo.repoName
+
+	// try new query string format
+	if (repoOwner != null && repoName ==  null) {
+		queryInfo = parseQueryString(queryString)
+		repoOwner = queryInfo.repoOwner
+		repoName = queryInfo.repoName
+	}
+
+	if ( useTestData ) {
+		repoOwner = 'testOwner'
+		repoName = 'testRepo'
+	}
+
+	if (repoOwner != null && repoName != null ) {
+		requestFirstPage()
+	}
+	else {
+		// if no repository properly requested in query string, get from UI
+		displayFooter()
+		displayRepoInfoOptions()
+	}
+
 }
 
-if ( useTestData ) {
-	repoOwner = 'testOwner'
-	repoName = 'testRepo'
+function requestFirstPage() {
+	hideFooter()
+
+	// start a spinner while graph data is being prepared
+	if ( !useTestData ) {
+		startSpinner('spins')
+	}
+
+	count_openPRs = 0
+	openPRdata = openPRdata_toShow = []
+	closedDatesToProcess = []
+
+	// Initialize an api request
+	page = 1
+	apiRequestString = buildRequestString(repoOwner, repoName, state, page)
+	request.open('get', apiRequestString)
+	request.send() // Send api request
 }
-
-// start a spinner while graph data is being prepared
-if ( !useTestData ) {
-	startSpinner('spins')
-}
-
-
-// Initialize an api request
-page = 1
-apiRequestString = buildRequestString(repoOwner, repoName, state, page)
-request.open('get', apiRequestString)
-request.send() // Send api request
 
 // builds url api request from search parameters
 function buildRequestString(repoOwner, repoName, state, page) {
@@ -59,8 +83,9 @@ function buildRequestString(repoOwner, repoName, state, page) {
 function processResponse() {
 	if (this.status == 403) {
 		alert('Sorry, GitHub API rate limit exceeded. Please try again later.')
-		processClosedDates()
+		processClosedDates() // might have still managed to get some
 		stopSpinner()
+		displayFooter()
   		displayGraphOptions()
   		showLastNevents(50)	
 	}
@@ -82,6 +107,7 @@ function processResponse() {
 			else {
 				processClosedDates()
 				stopSpinner()
+				displayFooter()
 	      		displayGraphOptions()
 	      		showLastNevents(50)	
 			}
@@ -90,6 +116,7 @@ function processResponse() {
 		else {
 			processPRs(responseObj)
 			processClosedDates()
+			displayFooter()
 			displayGraphOptions()
 	      	showLastNevents	(50)	
 		}
@@ -169,6 +196,31 @@ var date_sort_asc = function (obj1, obj2) {
 	return 0;
 };
 
+function parseLegacyQueryString(queryString) {
+	queryParams = queryString.split('/')
+	return {
+		repoOwner: queryParams[0],
+		repoName: queryParams[1]
+	}
+}
+
+// the query string should still be more sophisticated...
+function parseQueryString(queryString) {
+	queryParams = queryString.split('&')
+	return {
+		repoOwner: queryParams[0],
+		repoName: queryParams[1]
+	}
+}
+
+function buildQueryString(queryParams) {
+	return queryParams.repoOwner + '&' + queryParams.repoName
+}
+// there should be a matching buildQueryString function used by the 
+// bookmarklet, but because of the Content Security Policy it can't be accessed
+// from the bookmarklet anyway
+
+
 // -------------------------- functions for responding to graph/GUI events
 
 function filterPRdates(sinceDate, uptoDate) {
@@ -218,4 +270,50 @@ function getChartTitle() {
 	return "Pull Requests for " + repoOwner + "'s '" + repoName + "'"
 }
 
+function displayGraphOptions() {
+  document.getElementById('chartOptions').style.display = 'block'
+}
+
+function hideGraphOptions() {
+  document.getElementById('chartOptions').style.display = 'none'
+}
+
+function displayGraph() {
+  document.getElementById('chartContainer').style.display = 'block'
+}
+
+function hideGraph() {
+  document.getElementById('chartContainer').style.display = 'none'
+}
+
+function displayFooter() {
+  document.getElementById('footer').style.visibility = 'visible'
+}
+
+function hideFooter() {
+  document.getElementById('footer').style.visibility = 'hidden'
+}
+
+function displayRepoInfoOptions() {
+  document.getElementById('repoInfoOptions').style.display='block'
+}
+
+function hideRepoInfoOptions() {
+  document.getElementById('repoInfoOptions').style.display='none'
+}
+
+function setRepoOptions() {
+	repoOwner = document.getElementById('repoOwnerInput').value
+	repoName = document.getElementById('repoNameInput').value
+	history.replaceState({queryString: ''}, 'Pull Request Visualiser', '')
+	queryString = '?' + buildQueryString({repoOwner: repoOwner, repoName: repoName})
+	// change the URL to contain the repository being displayed
+	history.pushState({queryString: queryString}, getChartTitle(), queryString)
+	requestFirstPage()
+	hideRepoInfoOptions()
+}
+
+$(window).bind("popstate", function(e) {
+	main()
+});
 
