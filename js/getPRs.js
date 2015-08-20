@@ -15,6 +15,7 @@ function main() {
 	hideGraphOptions()
 	hideRepoInfoOptions()
 	hideFooter()
+	hideFailText()
 
 	// get requested repository from URL, if present
 	queryString = window.location.search.slice(1)
@@ -43,6 +44,10 @@ function main() {
 		// if no repository properly requested in query string, get from UI
 		displayFooter()
 		displayRepoInfoOptions()
+
+		if ( (repoOwner != null && repoOwner.length>0) || repoName != null ) {
+			displayFailText()
+		}
 	}
 
 }
@@ -81,13 +86,19 @@ function buildRequestString(repoOwner, repoName, state, page) {
 
 // callback for when api response is received
 function processResponse() {
-	if (this.status == 403) {
+	if ( this.status == 403 ) {
 		alert('Sorry, GitHub API rate limit exceeded. Please try again later.')
 		processClosedDates() // might have still managed to get some
 		stopSpinner()
 		displayFooter()
   		displayGraphOptions()
   		showLastNevents(50)	
+	}
+	else if ( this.status == 404 ) {
+		stopSpinner()
+		displayFooter()
+		displayFailText()
+		displayRepoInfoOptions()
 	}
 	else {
 
@@ -302,6 +313,14 @@ function hideRepoInfoOptions() {
   document.getElementById('repoInfoOptions').style.display='none'
 }
 
+function displayFailText() {
+  document.getElementById('failText').style.display='block'
+}
+
+function hideFailText() {
+  document.getElementById('failText').style.display='none'
+}
+
 function setRepoOptions() {
 	repoOwner = document.getElementById('repoOwnerInput').value
 	repoName = document.getElementById('repoNameInput').value
@@ -309,8 +328,9 @@ function setRepoOptions() {
 	queryString = '?' + buildQueryString({repoOwner: repoOwner, repoName: repoName})
 	// change the URL to contain the repository being displayed
 	history.pushState({queryString: queryString}, getChartTitle(), queryString)
-	requestFirstPage()
 	hideRepoInfoOptions()
+	hideFailText()
+	requestFirstPage()
 }
 
 $(window).bind("popstate", function(e) {
