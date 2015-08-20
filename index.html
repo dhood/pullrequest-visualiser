@@ -43,7 +43,7 @@
       <h2></h2>
       <br>
     </div>
-    <h2 id="bookmarklet">How to use this bookmarklet</h2>
+    <h2 id="bookmarklet">How to use this as a bookmarklet</h2>
 
 <ol>
   <li>Drag this link, <a href="javascript:(function(){
@@ -88,13 +88,19 @@ function buildURL() {
 
 </center>
 
+<br><br>
+    <i>
+    Firefox/Iceweasel users, only <a href="http://dhood.github.io/pullrequest-visualiser/plot.html"> 
+    manual use</a> available.</i>
+    <br><br>
 
 <h2 id="cant-find-your-bookmarks-bar">Can’t find your bookmarks bar?</h2>
 
-<p>Try these instructions to enable your bookmarks bar: <a href="https://support.google.com/chrome/answer/95745?hl=en">Chrome</a>,
-<a href="https://support.mozilla.org/en-US/kb/bookmarks-toolbar-display-favorite-websites#w_show-or-hide-the-bookmarks-toolbar">Firefox</a>, <a href="https://support.apple.com/kb/PH19265?locale=en_US">Safari</a>.</p>
+<p>Try these instructions to enable your bookmarks bar: <a href="https://support.google.com/chrome/answer/95745?hl=en">Chrome</a>, 
+  <a href="https://support.apple.com/kb/PH19265?locale=en_US">Safari</a>.</p>
 
-<span style="margin-top:15px; display:inline-block; font-size:13px">Made by Deanna Hood. Open source contributions welcome at <a href="http://www.github.com/dhood/pullrequest-visualiser">github.com/dhood/pullrequest-visualiser</a>
+<span style="margin-top:15px; display:inline-block; font-size:13px">Made by Deanna Hood. Open source contributions welcome at 
+  <a href="http://www.github.com/dhood/pullrequest-visualiser">github.com/dhood/pullrequest-visualiser</a>
 </span>
 
 
@@ -104,15 +110,7 @@ function buildURL() {
   $(function() {
     $( "#dialog" ).dialog({
       width: 500,
-      autoOpen: false,
-      show: {
-        //effect: "blind",
-        duration: 1000
-      },
-      hide: {
-        //effect: "explode",
-        duration: 1000
-      }
+      autoOpen: false
     });
  
     $( 'a[href=\\#dialog]' ).on( 'click', function() {
